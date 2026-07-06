@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>بازی دوز</title>
+<style>
+body{
+    font-family:Tahoma,sans-serif;
+    background:#f4f4f4;
+    text-align:center;
+}
+h1{
+    margin-top:20px;
+}
+#board{
+    width:306px;
+    margin:20px auto;
+    display:grid;
+    grid-template-columns:repeat(3,100px);
+    gap:3px;
+}
+.cell{
+    width:100px;
+    height:100px;
+    background:#fff;
+    border:2px solid #333;
+    font-size:48px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+}
+button{
+    margin-top:20px;
+    padding:10px 20px;
+    font-size:16px;
+}
+#status{
+    font-size:20px;
+    margin-top:10px;
+}
+</style>
+</head>
+<body>
+
+<h1>بازی دوز</h1>
+
+<div id="status">نوبت: X</div>
+
+<div id="board">
+<div class="cell"></div>
+<div class="cell"></div>
+<div class="cell"></div>
+<div class="cell"></div>
+<div class="cell"></div>
+<div class="cell"></div>
+<div class="cell"></div>
+<div class="cell"></div>
+<div class="cell"></div>
+</div>
+
+<button onclick="resetGame()">شروع دوباره</button>
+
+<script>
+const cells=document.querySelectorAll(".cell");
+const status=document.getElementById("status");
+
+let currentPlayer="X";
+let gameOver=false;
+
+const wins=[
+[0,1,2],[3,4,5],[6,7,8],
+[0,3,6],[1,4,7],[2,5,8],
+[0,4,8],[2,4,6]
+];
+
+cells.forEach((cell,index)=>{
+    cell.addEventListener("click",()=>{
+        if(cell.textContent!=="" || gameOver) return;
+
+        cell.textContent=currentPlayer;
+
+        if(checkWinner()){
+            status.textContent="🎉 بازیکن "+currentPlayer+" برنده شد!";
+            gameOver=true;
+            return;
+        }
+
+        if([...cells].every(c=>c.textContent!="")){
+            status.textContent="🤝 مساوی!";
+            gameOver=true;
+            return;
+        }
+
+        currentPlayer=currentPlayer==="X"?"O":"X";
+        status.textContent="نوبت: "+currentPlayer;
+    });
+});
+
+function checkWinner(){
+    return wins.some(combo=>{
+        return combo.every(i=>cells[i].textContent===currentPlayer);
+    });
+}
+
+function resetGame(){
+    cells.forEach(c=>c.textContent="");
+    currentPlayer="X";
+    gameOver=false;
+    status.textContent="نوبت: X";
+}
+</script>
+
+</body>
+</html>
